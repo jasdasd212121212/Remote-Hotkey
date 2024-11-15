@@ -58,7 +58,7 @@ public class ProxiedServer : IServer
         }
 
         byte[] codedUserName = Encoding.ASCII.GetBytes(_userName + ProxiedServerConfig.USER_NAME_CHARSEPARATE);
-        byte[] formattedMessage = new byte[codedUserName.Length + message.Length + 1];
+        byte[] formattedMessage = new byte[codedUserName.Length /*+ message.Length*/ + 1];
 
         formattedMessage[0] = ProxiedServerConfig.CLIENT_MESSAGE_CODE;
 
@@ -67,10 +67,7 @@ public class ProxiedServer : IServer
             formattedMessage[i + 1] = codedUserName[i];
         }
 
-        for (int i = formattedMessage.Length; i < formattedMessage.Length; i++)
-        {
-            formattedMessage[i] = message[i - codedUserName.Length];
-        }
+        formattedMessage = formattedMessage.Concat(message).ToArray();
 
         Console.WriteLine($"ProxiedServer -> send to clients: {Encoding.ASCII.GetString(formattedMessage)}");
 
