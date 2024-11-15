@@ -1,6 +1,4 @@
 ﻿using System.Drawing;
-using System.Drawing.Imaging;
-using System.Text;
 
 namespace RemoteHotkey.ScreenCapture;
 
@@ -26,8 +24,8 @@ public class ScreenCapture
         {
             captureGraphics.CopyFromScreen(0, 0, 0, 0, new Size(1920, 1080));
         }
-
-        return ImageToByte(_screen);
+        
+        return new byte[] { } /*ImageToByte(_screen)*/;
     }
 
     private byte[] ImageToByte(Image img)

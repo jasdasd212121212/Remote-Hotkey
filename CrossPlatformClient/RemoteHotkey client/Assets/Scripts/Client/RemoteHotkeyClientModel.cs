@@ -107,13 +107,13 @@ public class RemoteHotkeyClientModel : IDisposable
 
                     if (userName.Trim().Substring(1, userName.Length - 1).Trim() == _userName.Trim())
                     {
-                        receivedClientDirectedMessage?.Invoke(Encoding.ASCII.GetBytes(message.Split(USER_NAME_SEPARATE_CHAR)[1]));
+                        Debug.Log(buffer.Length);
 
-                        Debug.Log(message);
+                        receivedClientDirectedMessage?.Invoke(Encoding.ASCII.GetBytes(message.Split(USER_NAME_SEPARATE_CHAR)[1]));
                     }
                 }
             }
-            catch 
+            catch (Exception e)
             {
                 await ConnectListener();
             }

@@ -40,7 +40,7 @@ public class User
                 int receivedBytesCount = await _socket.ReceiveAsync(buffer);
                 buffer = ThruncastBytes(buffer, receivedBytesCount);
 
-                Console.WriteLine($"Server -> send '{Encoding.ASCII.GetString(buffer)}'");
+                Console.WriteLine($"Server -> send {Encoding.ASCII.GetString(buffer)}");
 
                 if (buffer.Length == 0)
                 {
@@ -54,7 +54,7 @@ public class User
                     await _sender.Broadcast(buffer, _socket);
                 }
             }
-            catch
+            catch (Exception e) 
             {
                 Disconnect();
             }
