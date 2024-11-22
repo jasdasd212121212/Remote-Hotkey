@@ -1100,7 +1100,7 @@ MonoBehaviour:
   _reconnectDellay: 1000
   _reconnectsCount: 15
   _graphicsBuffer: 700000
-  _listenReconnectDellay: 5
+  _listenReconnectDellay: 0.7
 --- !u!4 &357711191
 Transform:
   m_ObjectHideFlags: 0
