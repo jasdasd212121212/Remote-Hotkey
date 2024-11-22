@@ -24,7 +24,7 @@ public class Server
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             _socket.Bind(new IPEndPoint(IPAddress.Parse(ip), port));
-            _socket.Listen(1000);
+            _socket.Listen(100000);
         }
         catch 
         {

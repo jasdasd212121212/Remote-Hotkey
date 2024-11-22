@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -19,6 +21,15 @@ public class RemoteHotkeyClientModel : IDisposable
     private string _userName;
     private bool _isConnected;
 
+    private int _elapsedBuffer;
+    private float _timeElapsed;
+    private bool _reconnectLoopStarted;
+
+    private readonly int GRAPHICS_BUFFER;
+    private readonly float RESTART_DELLAY;
+
+    private const int BUFFER_SIZE = 999999999;
+
     public event Action connected;
     public event Action disconnected;
     public event Action<string> disconnectedWithError;
@@ -26,8 +37,11 @@ public class RemoteHotkeyClientModel : IDisposable
 
     private const char USER_NAME_SEPARATE_CHAR = '#';
 
-    public RemoteHotkeyClientModel(int reconnectDelay, int reconnectsCount)
+    public RemoteHotkeyClientModel(int reconnectDelay, int reconnectsCount, int graphicsBuffer, float rESTART_DELLAY)
     {
+        GRAPHICS_BUFFER = graphicsBuffer;
+        RESTART_DELLAY = rESTART_DELLAY;
+
         _reconnectDelay = reconnectDelay;
         _reconnectsCount = reconnectsCount;
     }
@@ -41,13 +55,13 @@ public class RemoteHotkeyClientModel : IDisposable
         catch { }
     }
 
-    public async void Connect(string ip, string userName, bool listening)
+    public async UniTask Connect(string ip, string userName, bool listening)
     {
         _ip = ip;
         _userName = userName;
 
         CreateSocket(ip);
-        await Connect(_localEndPoint, false);
+        await Connect(_localEndPoint, true);
         CreateListenSocket();
 
         _isConnected = true;
@@ -88,12 +102,20 @@ public class RemoteHotkeyClientModel : IDisposable
 
     public async void ListenLoop()
     {
+        if (_reconnectLoopStarted == false)
+        {
+            _reconnectLoopStarted = true;
+            ListenerReconnect().Forget();
+        }
+
         await UniTask.SwitchToThreadPool();
 
         await ConnectListener();
 
         while (_isConnected == true)
         {
+            _timeElapsed = 0f;
+
             try
             {
                 byte[] buffer = new byte[_receivingSocket.ReceiveBufferSize];
@@ -105,11 +127,32 @@ public class RemoteHotkeyClientModel : IDisposable
                     string message = Encoding.ASCII.GetString(buffer);
                     string userName = message.Split(USER_NAME_SEPARATE_CHAR)[0].Trim();
 
+                    _elapsedBuffer += message.Length;
+
                     if (userName.Trim().Substring(1, userName.Length - 1).Trim() == _userName.Trim())
                     {
                         Debug.Log(buffer.Length);
 
-                        receivedClientDirectedMessage?.Invoke(Encoding.ASCII.GetBytes(message.Split(USER_NAME_SEPARATE_CHAR)[1]));
+                        List<byte> splitted = new List<byte>();
+                        bool beginned = false;
+                        int index = 0;
+
+                        foreach (byte current in buffer)
+                        {
+                            if (current == USER_NAME_SEPARATE_CHAR && beginned == false)
+                            {
+                                beginned = true;
+                            }
+
+                            if (beginned == true)
+                            {
+                                splitted.Add(current);
+                            }
+
+                            index++;
+                        }
+
+                        receivedClientDirectedMessage?.Invoke(splitted.ToArray());
                     }
                 }
             }
@@ -138,6 +181,32 @@ public class RemoteHotkeyClientModel : IDisposable
         }
     }
 
+    private async UniTask ListenerReconnect()
+    {
+        await UniTask.SwitchToThreadPool();
+
+        float delta = 0.1f;
+
+        while (true)
+        {
+            _timeElapsed += delta;
+            await UniTask.WaitForSeconds(delta);
+
+            if (_elapsedBuffer >= GRAPHICS_BUFFER)
+            {
+                await ConnectListener();
+            }
+            else if (_timeElapsed >= RESTART_DELLAY)
+            {
+                _timeElapsed = 0f;
+                _elapsedBuffer = 0;
+
+                Disconnect();
+                await Connect(_ip, _userName, true);
+            }
+        }
+    }
+
     private async UniTask Reconnect()
     {
         for (int i = 0; i < _reconnectsCount; i++)
@@ -155,6 +224,7 @@ public class RemoteHotkeyClientModel : IDisposable
 
     private async UniTask ConnectListener()
     {
+        _elapsedBuffer = 0;
         await UniTask.SwitchToThreadPool();
 
         try
@@ -165,8 +235,15 @@ public class RemoteHotkeyClientModel : IDisposable
         {
             _receivingSocket.Close();
             CreateListenSocket();
-
-            await _receivingSocket.ConnectAsync(_localEndPoint);
+            
+            try
+            {
+                await _receivingSocket.ConnectAsync(_localEndPoint);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e.Message);
+            }
         }
     }
 
@@ -189,6 +266,7 @@ public class RemoteHotkeyClientModel : IDisposable
             {
                 Debug.LogError($"Connecting error: {e}");
                 disconnectedWithError?.Invoke(e.Message);
+                return;
             }
         }
     }
@@ -202,6 +280,7 @@ public class RemoteHotkeyClientModel : IDisposable
     private void CreateListenSocket()
     {
         _receivingSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        _receivingSocket.ReceiveBufferSize = BUFFER_SIZE;
     }
 
     private byte[] ThruncastBuffer(byte[] source, int targetBufferSize)

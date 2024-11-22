@@ -15,6 +15,8 @@ public class User
     {
         _sender = sender;
         _socket = socket;
+
+        _socket.ReceiveBufferSize = 999999999;
     }
 
     public void SetThread(Thread thread)
@@ -40,7 +42,9 @@ public class User
                 int receivedBytesCount = await _socket.ReceiveAsync(buffer);
                 buffer = ThruncastBytes(buffer, receivedBytesCount);
 
-                Console.WriteLine($"Server -> send {Encoding.ASCII.GetString(buffer)}");
+                string debugMessage = buffer.Length < 1000 ? Encoding.ASCII.GetString(buffer) : $"Bufer too long. Length: {buffer.Length}";
+
+                Console.WriteLine($"Server -> send {debugMessage}");
 
                 if (buffer.Length == 0)
                 {

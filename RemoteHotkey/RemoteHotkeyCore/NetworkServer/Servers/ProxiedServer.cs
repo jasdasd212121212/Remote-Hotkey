@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -39,6 +40,8 @@ public class ProxiedServer : IServer
         _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         _sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+        _socket.ReceiveBufferSize = 10000000;
+
         _userName = userName;
 
         HadleLoop();
@@ -58,7 +61,7 @@ public class ProxiedServer : IServer
         }
 
         byte[] codedUserName = Encoding.ASCII.GetBytes(_userName + ProxiedServerConfig.USER_NAME_CHARSEPARATE);
-        byte[] formattedMessage = new byte[codedUserName.Length /*+ message.Length*/ + 1];
+        byte[] formattedMessage = new byte[codedUserName.Length + 1];
 
         formattedMessage[0] = ProxiedServerConfig.CLIENT_MESSAGE_CODE;
 
@@ -69,7 +72,8 @@ public class ProxiedServer : IServer
 
         formattedMessage = formattedMessage.Concat(message).ToArray();
 
-        Console.WriteLine($"ProxiedServer -> send to clients: {Encoding.ASCII.GetString(formattedMessage)}");
+        string debugMessage = formattedMessage.Length < 1000 ? Encoding.ASCII.GetString(formattedMessage) : $"Message too long. Length: {formattedMessage.Length}";
+        Console.WriteLine($"ProxiedServer -> send to clients: {debugMessage}");
 
         try
         {
@@ -104,7 +108,7 @@ public class ProxiedServer : IServer
             {
                 byte[] buffer = new byte[_socket.ReceiveBufferSize];
                 int receivedBytesCount = await _socket.ReceiveAsync(buffer);
-                
+
                 if (buffer[0] != ProxiedServerConfig.CLIENT_MESSAGE_CODE)
                 {
                     HandlePackege(buffer, receivedBytesCount);

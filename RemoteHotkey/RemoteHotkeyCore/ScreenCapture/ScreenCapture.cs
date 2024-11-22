@@ -1,10 +1,13 @@
 ﻿using System.Drawing;
+using System.Drawing.Imaging;
+using System.Text;
 
 namespace RemoteHotkey.ScreenCapture;
 
 public class ScreenCapture
 {
     private Bitmap _screen;
+    private const string FILE_NAME = "temp.jpeg";
 
     public ScreenCapture()
     {
@@ -18,19 +21,18 @@ public class ScreenCapture
 
     public byte[] CaptureScreen()
     {
-        Rectangle rectangle = new Rectangle(0, 0, 1920, 1080);
+        Rectangle bounds = new Rectangle(0, 0, 1920, 1080);
 
-        using (Graphics captureGraphics = Graphics.FromImage(_screen))
+        using (Bitmap captureBitmap = new Bitmap(bounds.Width, bounds.Height))
         {
-            captureGraphics.CopyFromScreen(0, 0, 0, 0, new Size(1920, 1080));
-        }
-        
-        return new byte[] { } /*ImageToByte(_screen)*/;
-    }
+            using (Graphics captureGraphics = Graphics.FromImage(captureBitmap))
+            {
+                captureGraphics.CopyFromScreen(bounds.X, bounds.Y, 0, 0, bounds.Size);
+            }
 
-    private byte[] ImageToByte(Image img)
-    {
-        ImageConverter converter = new ImageConverter();
-        return (byte[])converter.ConvertTo(img, typeof(byte[]));
+            captureBitmap.Save(FILE_NAME, ImageFormat.Jpeg);
+        }
+
+        return File.ReadAllBytes(FILE_NAME);
     }
 }

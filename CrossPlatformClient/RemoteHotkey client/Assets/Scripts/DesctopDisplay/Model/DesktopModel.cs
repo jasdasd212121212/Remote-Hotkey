@@ -31,7 +31,25 @@ public class DesktopModel
     {
         await UniTask.SwitchToMainThread();
 
-        _tempTexture.LoadRawTextureData(message);
+        byte[] formatted = new byte[message.Length - 1];
+
+        for (int i = 0; i < formatted.Length; i++) 
+        {
+            formatted[i] = message[i + 1];
+        }
+
+        //File.WriteAllBytes(Application.streamingAssetsPath + "/temp.jpeg", formatted);
+        //byte[] file = File.ReadAllBytes(Application.streamingAssetsPath + "/temp.jpeg");
+
+        try
+        {
+            _tempTexture.LoadImage(formatted);
+        }
+        catch 
+        {
+            Debug.LogError("Texture error!");
+        }
+        
         received?.Invoke(_tempTexture);
     }
 }

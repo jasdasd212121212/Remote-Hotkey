@@ -21,7 +21,7 @@ public class ScreenCaptureNetworkSender
         {
             _server.SendMessageToClient(_screen.CaptureScreen());
 
-            await Task.Delay(250);
+            await Task.Delay(1000);
         }
     }
 }
