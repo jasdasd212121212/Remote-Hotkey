@@ -12,7 +12,7 @@ public class ClientInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
-        _client = new RemoteHotkeyClientModel(_reconnectDellay, _reconnectsCount, _graphicsBuffer, _listenReconnectDellay);
+        _client = new RemoteHotkeyClientModel();
 
         Container.Bind<RemoteHotkeyClientModel>().FromInstance(_client).AsSingle().NonLazy();
     }

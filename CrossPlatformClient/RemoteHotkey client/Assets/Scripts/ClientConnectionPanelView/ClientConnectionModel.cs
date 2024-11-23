@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 using Zenject;
@@ -30,7 +31,7 @@ public class ClientConnectionModel : MonoBehaviour
 
     public void Connect(string ip, string userName)
     {
-        _client.Connect(ip, userName, _listening);
+        _client.Connect(ip, userName).Forget();
 
         PlayerPrefs.SetString(IP_SAVE_KEY, ip);
         PlayerPrefs.SetString(USER_NAME_SAVE_KEY, userName);
