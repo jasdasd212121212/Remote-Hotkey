@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PackegeParserHelper : MonoBehaviour
+public class PackegeParserHelper
 {
     private readonly char USER_NAME_SEPARATE_CHAR;
 
