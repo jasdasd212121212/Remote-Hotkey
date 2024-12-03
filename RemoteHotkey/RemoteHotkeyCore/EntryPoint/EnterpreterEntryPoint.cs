@@ -1,7 +1,9 @@
 ﻿using RemoteHotkey.CommandLanguage;
 using RemoteHotkey.CommandSystem;
 using RemoteHotkey.InputsConstrollSystem;
-using RemoteHotkey.LowLevel;
+using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Commands;
+using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions;
+using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions.__Base;
 
 namespace RemoteHotkeyCore.EnterpreterEntry;
 
@@ -18,7 +20,8 @@ public class EnterpreterEntryPoint
                 new MouseClickCommandToken(),
                 new MouseMoveCommandToken(),
                 new UnlockMouseCommandToken(),
-                new ExecuteBatchCommandToken()
+                new ExecuteBatchCommandToken(),
+                new DebugCommandToken()
             },
 
             new IExpressionToken[]

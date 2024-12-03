@@ -1,4 +1,6 @@
 ﻿using RemoteHotkey.CommandLanguage.Helpers;
+using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions;
+using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions.__Base;
 
 namespace RemoteHotkey.CommandLanguage;
 

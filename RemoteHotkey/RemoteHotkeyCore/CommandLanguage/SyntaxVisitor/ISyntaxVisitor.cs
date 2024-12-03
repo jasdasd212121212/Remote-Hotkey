@@ -1,4 +1,6 @@
-﻿namespace RemoteHotkey.CommandLanguage.SyntaxVisitor;
+﻿using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions;
+
+namespace RemoteHotkey.CommandLanguage.SyntaxVisitor;
 
 public interface ISyntaxVisitor
 {

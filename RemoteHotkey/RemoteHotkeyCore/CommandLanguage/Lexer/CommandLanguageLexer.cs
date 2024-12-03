@@ -1,4 +1,6 @@
-﻿namespace RemoteHotkey.CommandLanguage;
+﻿using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions.__Base;
+
+namespace RemoteHotkey.CommandLanguage;
 
 public class CommandLanguageLexer
 {
@@ -35,17 +37,14 @@ public class CommandLanguageLexer
             bool commandsCompileResult = _commandLexer.TryTokenize(script, out script, out IToken[] commandTokens);
             result.AddRange(commandTokens);
 
-            if (commandsCompileResult == false)
+            foreach (ExpressionLexingRoundBase expressionLexer in _expressionLexers)
             {
-                foreach (ExpressionLexingRoundBase expressionLexer in _expressionLexers)
+                if (expressionLexer.TryTokenize(script, out string newScript, out IToken[] expressions))
                 {
-                    if (expressionLexer.TryTokenize(script, out string newScript, out IToken[] expressions))
-                    {
-                        script = newScript;
-                        result.AddRange(expressions);
+                    script = newScript;
+                    result.AddRange(expressions);
 
-                        break;
-                    }
+                    break;
                 }
             }
         }

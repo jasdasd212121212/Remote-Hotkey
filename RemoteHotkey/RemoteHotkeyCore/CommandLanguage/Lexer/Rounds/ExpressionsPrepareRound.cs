@@ -1,4 +1,6 @@
-﻿namespace RemoteHotkey.CommandLanguage;
+﻿using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions.__Base;
+
+namespace RemoteHotkey.CommandLanguage;
 
 public class ExpressionsPrepareRound : ExpressionLexingRoundBase
 {

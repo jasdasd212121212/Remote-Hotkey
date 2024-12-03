@@ -18,7 +18,7 @@ public class CommandsPerformer
         foreach (IInputCommand command in commands)
         {
             command.Execute(_inputMode);
-            await Task.Delay(150);
+            await Task.Delay(1);
         }
     }
 }
