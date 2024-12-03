@@ -6,7 +6,7 @@ public class CommandLexingRound : LexingRoundBase
 {
     private ArgumentExtractor _argumentExtractor;
 
-    public CommandLexingRound(IToken[] tokens) : base(tokens) 
+    public CommandLexingRound(IToken[] tokens) : base(tokens)
     {
         _argumentExtractor = new ArgumentExtractor();
     }
@@ -18,13 +18,13 @@ public class CommandLexingRound : LexingRoundBase
         script = script.Trim();
         string[] commands = script.Split(CommandLexerConstants.SEPARATING_SYMBOL);
 
-        for(int i = 0; i < commands.Length; i++)
+        for (int i = 0; i < commands.Length; i++)
         {
             if (commands[i].Contains(CommandLexerConstants.EXPRESSION_START_SYMBOL))
             {
                 string usedCommands = "";
 
-                for(int j = 0; j <= i; j++)
+                for (int j = 0; j <= i; j++)
                 {
                     if (commands[j].Contains(CommandLexerConstants.EXPRESSION_START_SYMBOL) == false)
                     {
@@ -46,7 +46,7 @@ public class CommandLexingRound : LexingRoundBase
         result = commandTokens.ToArray();
         erasedScript = script;
 
-        return true; 
+        return true;
     }
 
     private IToken[] TokenizeCommand(string command)

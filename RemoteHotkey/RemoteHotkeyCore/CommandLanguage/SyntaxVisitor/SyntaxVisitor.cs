@@ -1,13 +1,15 @@
-﻿using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions;
+﻿using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Commands;
+using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions;
+using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions.__Base;
 
 namespace RemoteHotkey.CommandLanguage.SyntaxVisitor;
 
 public class SyntaxVisitor : ISyntaxVisitor
 {
-    private List<IToken> _tokens = new List<IToken>();
+    private List<ICommandToken> _tokens = new List<ICommandToken>();
     private List<ICommandToken> _commands = new List<ICommandToken>();
 
-    public IToken[] Tokens => _tokens.ToArray();
+    public ICommandToken[] Tokens => _tokens.ToArray();
     public ICommandToken[] Commands => _commands.ToArray();
 
     public void Reset()
@@ -22,11 +24,11 @@ public class SyntaxVisitor : ISyntaxVisitor
         _tokens.Add(command);
     }
 
-    public void Visit(LoopExpressionToken loop)
+    public void Visit(IExpressionToken expression)
     {
-        IToken[] tokens = loop.ExtractTokens();
+        ICommandToken[] tokens = expression.ExtractTokens().Select(token => token as ICommandToken).ToArray();
 
-        foreach (IToken token in tokens)
+        foreach (ICommandToken token in tokens)
         {
             if (token is ICommandToken)
             {

@@ -114,7 +114,10 @@ public class ProxiedServer : IServer
                     HandlePackege(buffer, receivedBytesCount);
                 }
             }
-            catch { }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Server catch an error -> {e.Message} \n Trace -> {e.StackTrace}");
+            }
         }
     }
 

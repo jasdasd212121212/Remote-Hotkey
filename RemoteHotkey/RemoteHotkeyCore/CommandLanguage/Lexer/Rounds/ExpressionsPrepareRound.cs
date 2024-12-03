@@ -4,15 +4,15 @@ namespace RemoteHotkey.CommandLanguage;
 
 public class ExpressionsPrepareRound : ExpressionLexingRoundBase
 {
-    public ExpressionsPrepareRound(IExpressionToken[] tokens) : base(tokens) {}
+    public ExpressionsPrepareRound(IExpressionToken[] tokens) : base(tokens) { }
 
     public override bool TryTokenize(string script, out string erasedScript, out IToken[] result)
     {
-        string editedScript = "";
+        string editedScript = script;
 
         foreach (IToken token in Tokens)
         {
-            editedScript = script.Replace(token.Name, $"{CommandLexerConstants.EXPRESSION_START_SYMBOL}{token.Name}");
+            editedScript = editedScript.Replace(token.Name, $"{CommandLexerConstants.EXPRESSION_START_SYMBOL}{token.Name}");
         }
 
         result = null;

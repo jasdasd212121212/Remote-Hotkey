@@ -1,14 +1,16 @@
-﻿using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions;
+﻿using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Commands;
+using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions;
+using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions.__Base;
 
 namespace RemoteHotkey.CommandLanguage.SyntaxVisitor;
 
 public interface ISyntaxVisitor
 {
-    IToken[] Tokens { get; }
+    ICommandToken[] Tokens { get; }
     ICommandToken[] Commands { get; }
 
     void Reset();
 
     void Visit(ICommandToken command);
-    void Visit(LoopExpressionToken loop);
+    void Visit(IExpressionToken loop);
 }

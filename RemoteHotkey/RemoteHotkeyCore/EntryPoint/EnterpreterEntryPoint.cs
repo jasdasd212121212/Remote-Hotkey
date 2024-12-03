@@ -11,7 +11,9 @@ public class EnterpreterEntryPoint
 {
     public CommandsPerformer Construct(out CommandLanguageLexer commandLexer)
     {
-        CommandsPerformer performer = new CommandsPerformer(new InputModel());
+        InputModel inputModel = new InputModel();
+
+        CommandsPerformer performer = new CommandsPerformer(inputModel);
 
         CommandLanguageLexer lexer = new CommandLanguageLexer(
             new ICommandToken[]
@@ -26,8 +28,11 @@ public class EnterpreterEntryPoint
 
             new IExpressionToken[]
             {
-                new LoopExpressionToken(null)
-            }
+                new LoopExpressionToken(null),
+                new LoopCheckKeyboardButton(null, inputModel.KeyboardsController)
+            },
+
+            inputModel.KeyboardsController
         );
 
         commandLexer = lexer;

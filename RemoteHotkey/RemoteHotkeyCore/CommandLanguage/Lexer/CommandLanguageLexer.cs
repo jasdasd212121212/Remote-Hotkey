@@ -1,4 +1,8 @@
-﻿using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions.__Base;
+﻿using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions;
+using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions.__Base;
+using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions.__Base;
+using RemoteHotkeyCore.CommandLanguage.Lexer.Rounds;
+using RemoteHotkeyCore.InputsController.Controllers;
 
 namespace RemoteHotkey.CommandLanguage;
 
@@ -10,16 +14,17 @@ public class CommandLanguageLexer
     private ExpressionLexingRoundBase[] _expressionLexers;
     private ExpressionsPrepareRound _expressionsPrepareRound;
 
-    public CommandLanguageLexer(ICommandToken[] commandTokens, IExpressionToken[] expressions)
+    public CommandLanguageLexer(ICommandToken[] commandTokens, IExpressionToken[] expressions, KeyboardController keyboardController)
     {
         _commandTokens = commandTokens;
 
         _commandLexer = new CommandLexingRound(commandTokens);
         _expressionsPrepareRound = new ExpressionsPrepareRound(expressions);
 
-        _expressionLexers = new ExpressionLexingRoundBase[] 
+        _expressionLexers = new ExpressionLexingRoundBase[]
         {
-            new LoopsLexingRound(expressions, _commandLexer)
+            new LoopsLexingRound(expressions, _commandLexer),
+            new LoopCheckKeyboardButtonLexingRound(expressions, _commandLexer, keyboardController)
         };
     }
 
