@@ -5,9 +5,9 @@ namespace RemoteHotkeyCore.InputsController.Controllers;
 public class KeyboardController
 {
     private HooksThread _hooks;
-    private bool _canClear;
 
     private List<string> _keys = new List<string>();
+    private List<int> _registred = new List<int>();
 
     private Dictionary<string, uint> _keyboard = new Dictionary<string, uint>()
     {
@@ -68,17 +68,14 @@ public class KeyboardController
     {
         _hooks = new HooksThread();
         _hooks.Running = true;
-        _canClear = true;
-
-        _hooks.cleared += OnClear;
 
         foreach (KeyValuePair<string, uint> current in _keyboard)
         {
-            _hooks.AddHotkey(current.Value, HotkeyModifiers.None, (msg) =>
+            _registred.Add(_hooks.AddHotkey(current.Value, HotkeyModifiers.None, (msg) =>
             {
                 string key = current.Key;
                 OnPress(msg, key);
-            });
+            }));
         }
     }
 
@@ -92,21 +89,5 @@ public class KeyboardController
     private void OnPress(Win32Msg message, string key)
     {
         _keys.Add(key);
-    }
-
-    private void OnClear()
-    {
-        if (_canClear == true)
-        {
-            Clear();
-        }
-    }
-
-    private async void Clear()
-    {
-        _canClear = false;
-        await Task.Delay(2);
-        _keys.Clear();
-        _canClear = true;
     }
 }

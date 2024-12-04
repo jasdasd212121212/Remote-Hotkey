@@ -45,14 +45,23 @@ namespace Hooks
 
                 while (queue.TryDequeue(out HtEnter action))
                 {
+                    if (Running == false)
+                        return;
+
                     //Add Hotkey, fourth item (the byte) is 0
                     if (action.Item4 == 0)
                     {
                         if (RegisterHotKey(IntPtr.Zero, action.Item5, (uint)action.Item2, action.Item1)) hotkeys.Add((action.Item5, action.Item3));
+
+                        if (Running == false)
+                            return;
                     }
                     //Remove hotkey, fourth item is 1
                     else if (action.Item4 == 1)
                     {
+                        if (Running == false)
+                            return;
+
                         UnregisterHotKey(IntPtr.Zero, action.Item5);
                         //This just frees up some additional memory and doesnt leave it unnecessarily
                         foreach (Ht ht in hotkeys)
@@ -64,11 +73,17 @@ namespace Hooks
                                 break;
                             }
                         }
+
+                        if (Running == false)
+                            return;
                     }
                 }
                 //this will pretty much always return true which is why it shouldve been an if statement and i messed that up
                 if (GetMessage(out Win32Msg msg, IntPtr.Zero, 0U, 0U))
                 {
+                    if (Running == false)
+                        return;
+
                     //Message loop and if the windows message is the Hotkey message process it
                     switch (msg.Message)
                     {
@@ -82,6 +97,9 @@ namespace Hooks
                             }
                             break;
                     }
+
+                    if (Running == false)
+                        return;
                 }
             }
         }
