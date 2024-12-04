@@ -132,9 +132,9 @@ public class ProxiedServer : IServer
 
             return true;
         }
-        catch
+        catch (Exception e)
         {
-            Console.WriteLine("ProxiedServer -> connection failure");
+            Console.WriteLine($"ProxiedServer -> connection failure \n Error occured: {e.Message} \n {e.StackTrace}");
 
             Console.Read();
             return false;

@@ -60,6 +60,7 @@ public class User
             }
             catch (Exception e) 
             {
+                Console.WriteLine(e.Message);
                 Disconnect();
             }
         }
