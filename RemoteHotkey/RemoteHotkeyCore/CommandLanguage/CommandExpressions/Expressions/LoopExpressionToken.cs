@@ -17,10 +17,10 @@ public class LoopExpressionToken : IExpressionToken
 
         set
         {
-            if (value[0] != null && int.TryParse(value[0].Argument, out int result) == false)
-            {
-                throw new ArgumentException();
-            }
+            //if (value[0] != null && int.TryParse(value[0].Argument, out int result) == false)
+            //{
+            //    throw new ArgumentException(value[0].Argument);
+            //}
 
             _arguments = value;
         }
@@ -43,14 +43,32 @@ public class LoopExpressionToken : IExpressionToken
 
     public IToken[] ExtractTokens()
     {
+        List<IToken> rawTokens = new List<IToken>();
         List<IToken> result = new List<IToken>();
         int.TryParse(Arguments[0].Argument, out int iterations);
 
+        for (int i = 0; i < _contaimendTokens.Length; i++)
+        {
+            if (typeof(IExpressionToken).IsAssignableFrom(_contaimendTokens[i].GetType()))
+            {
+                rawTokens.AddRange((_contaimendTokens[i] as IExpressionToken).ExtractTokens());
+            }
+            else
+            {
+                rawTokens.Add(_contaimendTokens[i]);
+            }
+        }
+
         for (int i = 0; i < iterations; i++)
         {
-            result.AddRange(_contaimendTokens);
+            result.AddRange(rawTokens);
         }
 
         return result.ToArray();
+    }
+
+    public IToken[] GetRawTokens()
+    {
+        return _contaimendTokens;
     }
 }

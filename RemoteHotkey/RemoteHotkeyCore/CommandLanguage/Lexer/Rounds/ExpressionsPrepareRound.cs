@@ -4,7 +4,12 @@ namespace RemoteHotkey.CommandLanguage;
 
 public class ExpressionsPrepareRound : ExpressionLexingRoundBase
 {
-    public ExpressionsPrepareRound(IExpressionToken[] tokens) : base(tokens) { }
+    private IExpressionToken[] _expressionTokens;
+
+    public ExpressionsPrepareRound(IExpressionToken[] tokens) : base(tokens) 
+    {
+        _expressionTokens = tokens;
+    }
 
     public override bool TryTokenize(string script, out string erasedScript, out IToken[] result)
     {
@@ -19,5 +24,10 @@ public class ExpressionsPrepareRound : ExpressionLexingRoundBase
         erasedScript = editedScript;
 
         return false;
+    }
+
+    protected override LexingRoundBase GetClone()
+    {
+        return new ExpressionsPrepareRound(_expressionTokens);
     }
 }

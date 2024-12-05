@@ -5,4 +5,5 @@ namespace RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions.__Base
 public interface IExpressionToken : IToken
 {
     public IToken[] ExtractTokens();
+    public IToken[] GetRawTokens();
 }

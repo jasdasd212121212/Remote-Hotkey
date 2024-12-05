@@ -16,6 +16,14 @@ public class CommandLexingRound : LexingRoundBase
         List<IToken> commandTokens = new List<IToken>();
 
         script = script.Trim();
+
+        if (string.IsNullOrEmpty(script) || script == "" || script.Length == 0)
+        {
+            erasedScript = "";
+            result = commandTokens.ToArray();
+            return false;
+        }
+
         string[] commands = script.Split(CommandLexerConstants.SEPARATING_SYMBOL);
 
         for (int i = 0; i < commands.Length; i++)
@@ -47,6 +55,11 @@ public class CommandLexingRound : LexingRoundBase
         erasedScript = script;
 
         return true;
+    }
+
+    protected override LexingRoundBase GetClone()
+    {
+        return new CommandLexingRound(Tokens);
     }
 
     private IToken[] TokenizeCommand(string command)

@@ -1,4 +1,5 @@
-﻿using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions;
+﻿using RemoteHotkeyCore.CommandLanguage.__Interfaces;
+using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions;
 using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions.__Base;
 using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions.__Base;
 using RemoteHotkeyCore.CommandLanguage.Lexer.Rounds;
@@ -6,9 +7,11 @@ using RemoteHotkeyCore.InputsController.Controllers;
 
 namespace RemoteHotkey.CommandLanguage;
 
-public class CommandLanguageLexer
+public class CommandLanguageLexer : IClonableRound
 {
     private ICommandToken[] _commandTokens;
+    private IExpressionToken[] _expressionTokens;
+    private KeyboardController _keyboardController;
 
     private CommandLexingRound _commandLexer;
     private ExpressionLexingRoundBase[] _expressionLexers;
@@ -17,15 +20,22 @@ public class CommandLanguageLexer
     public CommandLanguageLexer(ICommandToken[] commandTokens, IExpressionToken[] expressions, KeyboardController keyboardController)
     {
         _commandTokens = commandTokens;
+        _expressionTokens = expressions;
+        _keyboardController = keyboardController;
 
         _commandLexer = new CommandLexingRound(commandTokens);
         _expressionsPrepareRound = new ExpressionsPrepareRound(expressions);
 
         _expressionLexers = new ExpressionLexingRoundBase[]
         {
-            new LoopsLexingRound(expressions, _commandLexer),
-            new LoopCheckKeyboardButtonLexingRound(expressions, _commandLexer, keyboardController)
+            new LoopsLexingRound(expressions, _commandLexer, this),
+            new LoopCheckKeyboardButtonLexingRound(expressions, _commandLexer, keyboardController, this)
         };
+    }
+
+    public IClonableRound CloneSelf()
+    {
+        return new CommandLanguageLexer(_commandTokens, _expressionTokens, _keyboardController);
     }
 
     public IToken[] Tokenize(string script)

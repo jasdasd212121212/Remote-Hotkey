@@ -62,4 +62,9 @@ public class LoopCheckKeyboardButton : IExpressionToken
             _keyboardController.ButtonIsPressed(Arguments[0].Argument)
         )).ToArray();
     }
+
+    public IToken[] GetRawTokens()
+    {
+        return _contaimendTokens;
+    }
 }
