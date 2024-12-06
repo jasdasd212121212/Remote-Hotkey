@@ -16,6 +16,7 @@ public class CommandLexingRound : LexingRoundBase
         List<IToken> commandTokens = new List<IToken>();
 
         script = script.Trim();
+        erasedScript = "";
 
         if (string.IsNullOrEmpty(script) || script == "" || script.Length == 0)
         {
@@ -52,7 +53,6 @@ public class CommandLexingRound : LexingRoundBase
         }
 
         result = commandTokens.ToArray();
-        erasedScript = script;
 
         return true;
     }

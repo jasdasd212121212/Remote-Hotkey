@@ -58,7 +58,7 @@ public class LoopCheckKeyboardButton : IExpressionToken
     {
         return _contaimendTokens.Select(token => new ConditionalsCommandHolderToken
         (
-            token as ICommandToken,
+            token,
             _keyboardController.ButtonIsPressed(Arguments[0].Argument)
         )).ToArray();
     }
