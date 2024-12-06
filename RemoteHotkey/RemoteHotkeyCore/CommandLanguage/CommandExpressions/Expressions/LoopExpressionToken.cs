@@ -17,10 +17,10 @@ public class LoopExpressionToken : IExpressionToken
 
         set
         {
-            //if (value[0] != null && int.TryParse(value[0].Argument, out int result) == false)
-            //{
-            //    throw new ArgumentException(value[0].Argument);
-            //}
+            if (value[0] != null && int.TryParse(value[0].Argument, out int result) == false)
+            {
+                throw new ArgumentException(value[0].Argument);
+            }
 
             _arguments = value;
         }

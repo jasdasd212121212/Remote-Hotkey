@@ -41,48 +41,27 @@ public abstract class LoopsLexingRoundBase<TLoopExpression> : ExpressionLexingRo
             return false;
         }
 
-        string expression = _expressionExtractor.ExtractExpressions(script, out erasedScript, false);
-        string expressionBody = _expressionExtractor.ExtractExpressionBody(expression, out string erasedDefficult);
-        bool isSimple = true;
+        string expression = _expressionExtractor.ExtractExpressions(script, out string erasedSimple, false);
+        string expressionBody = _expressionExtractor.ExtractExpressionBody(expression, out string e);
 
-        //string all = _expressionExtractor.ExtractExpressions(script, out string e, true);
-        //int count = all.Where(currentSymbol => currentSymbol == CommandLexerConstants.EXPRESSION_START_SYMBOL).ToArray().Length - 1;
+        string all = _expressionExtractor.ExtractExpressions(script, out string erasedDefficult, true);
+        int count = all.Where(currentSymbol => currentSymbol == CommandLexerConstants.EXPRESSION_START_SYMBOL).ToArray().Length - 1;
+        string allBody = _expressionExtractor.ExtractExpressionBody(all, out string rr);
+        allBody = allBody.Remove(allBody.Length - 2);
 
         TLoopExpression loop = default;
 
         if (expressionBody.Contains(CommandLexerConstants.EXPRESSION_START_SYMBOL) == false)
         {
             loop = TokenizeExpression(expression);
+
+            erasedScript = erasedSimple;
         }
         else
         {
-            //string allBody = _expressionExtractor.ExtractExpressionBody(all, out string rr);
-            //allBody = allBody.Remove(allBody.Length - 2);
+            loop = TokenizeDifficultExpression(allBody, all);
 
-            loop = TokenizeDifficultExpression(expressionBody, expression);
-            
-            isSimple = false;
-        }
-
-        if (erasedScript.Contains(CommandLexerConstants.EXPRESSION_START_SYMBOL) == true && isSimple == false)
-        {
-            string preparedErased = _expressionExtractor.ExtractExpressions(erasedScript, out string e2, false);
-            CommandLanguageLexer lexer = _mainLexer.CloneSelf() as CommandLanguageLexer;
-            IToken[] tokens = lexer.Tokenize(preparedErased);
-
-            if (tokens != null && tokens.Length != 0 && tokens[0] != null)
-            {
-                List<IToken> loopTokens = new List<IToken>();
-                IToken[] currentTokens = loop.GetRawTokens();
-
-                loopTokens.AddRange(currentTokens);
-                loopTokens.AddRange(tokens);
-
-                CommandArgumentToken[] arguments = loop.Arguments;
-
-                loop = GetLoopExpression(loopTokens.ToArray());
-                loop.Arguments = arguments;
-            }
+            erasedScript = erasedDefficult;
         }
 
         resultList.Add(loop);
@@ -93,7 +72,9 @@ public abstract class LoopsLexingRoundBase<TLoopExpression> : ExpressionLexingRo
 
     private bool Validate(string script)
     {
-        if (script.Contains(_loopExpression.Name))
+        string header = script.Split(CommandLexerConstants.EXPRESSION_BODY_START_SYMBOL)[0];
+
+        if (header.Contains(_loopExpression.Name))
         {
             return true;
         }

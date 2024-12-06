@@ -28,9 +28,9 @@ public class ExpressionExtractor
                 erasedScript += script[i];
             }
 
-            char required = isGetParent ? 'E' : CommandLexerConstants.EXPRESSION_BODY_END_SYMBOL;
+            char required = isGetParent ? CommandLexerConstants.DIFFICULT_EXPRESSION_END : CommandLexerConstants.EXPRESSION_BODY_END_SYMBOL;
 
-            if (script[i] == /*CommandLexerConstants.EXPRESSION_BODY_END_SYMBOL*/ required)
+            if (script[i] == required)
             {
                 adding = false;
             }

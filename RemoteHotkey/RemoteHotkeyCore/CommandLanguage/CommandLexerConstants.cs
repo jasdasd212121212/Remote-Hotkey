@@ -12,4 +12,5 @@ public static class CommandLexerConstants
     public static readonly char EXPRESSION_START_SYMBOL = '$';
     public static readonly char EXPRESSION_BODY_START_SYMBOL = '{';
     public static readonly char EXPRESSION_BODY_END_SYMBOL = '}';
+    public static readonly char DIFFICULT_EXPRESSION_END = '?';
 }
