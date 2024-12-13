@@ -14,6 +14,6 @@ public class MouseMoveCommand : IInputCommand
 
     public void Execute(InputModel inputModel)
     {
-        inputModel.MouseController.SetMousePosition(_targetPosition);
+        inputModel.MouseController.SetMousePosition(_targetPosition, true);
     }
 }

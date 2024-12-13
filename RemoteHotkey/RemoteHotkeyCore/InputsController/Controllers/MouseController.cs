@@ -26,11 +26,18 @@ public class MouseController
     [DllImport("User32.dll", EntryPoint = "GetSystemMetrics", CallingConvention = CallingConvention.Winapi)]
     internal static extern int InternalGetSystemMetrics(int value);
 
-    public void SetMousePosition(Vector2 position)
+    public void SetMousePosition(Vector2 position, bool isAbsolute)
     {
         Vector2 screenSize = new Vector2(InternalGetSystemMetrics(0), InternalGetSystemMetrics(1));
 
-        mouse_event(MOUSE_MOVE | MOUSE_ABSOLUTE, (int)Math.Round(position.X * 65536 / screenSize.X), (int)Math.Round(position.Y * 65536 / screenSize.Y), 0, 0);
+        if (isAbsolute == true)
+        {
+            mouse_event(MOUSE_MOVE | MOUSE_ABSOLUTE, (int)Math.Round(position.X * 65536 / screenSize.X), (int)Math.Round(position.Y * 65536 / screenSize.Y), 0, 0);
+        }
+        else
+        {
+            mouse_event(MOUSE_MOVE, (int)position.X, (int)position.Y, 0, 0);
+        }
     }
 
     public async void Lock(int lockTics)
@@ -39,7 +46,7 @@ public class MouseController
 
         for (int i = 0; i < lockTics; i++)
         {
-            SetMousePosition(new Vector2(-2000, -2000));
+            SetMousePosition(new Vector2(-2000, -2000), true);
 
             if (_mouseLocked == false)
             {
