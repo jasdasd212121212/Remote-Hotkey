@@ -3,7 +3,6 @@ using RemoteHotkey.CommandLanguage.SyntaxVisitor;
 using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Commands;
 using RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions.__Base;
 using RemoteHotkeyCore.InputsController.Controllers;
-using System.Windows.Forms;
 
 namespace RemoteHotkeyCore.CommandLanguage.CommandExpressions.Expressions;
 
