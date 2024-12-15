@@ -1,4 +1,5 @@
 ﻿using RemoteHotkey.Network.Server;
+using RemoteHotkeyCore.NetworkServer.Servers;
 using System.Diagnostics;
 
 namespace RemoteHotkeyCore;
@@ -35,7 +36,7 @@ public static class GlobalEntryPoint
 
     private async static void Start()
     {
-        _server = new ProxiedServer(_ip, _userName);
+        _server = new JsProxiedServer(_ip, _userName);
 
         while (_server.IsConnected == false) { }
 

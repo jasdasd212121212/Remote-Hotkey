@@ -2,7 +2,7 @@ using Zenject;
 
 public class DesktopModelInstaller : MonoInstaller
 {
-    [Inject] private RemoteHotkeyClientModel _client;
+    [Inject] private IClient _client;
 
     public override void InstallBindings()
     {

@@ -4,7 +4,7 @@ using System.Text;
 
 public class ClientPresenter : MonoBehaviour
 {
-    [Inject] private RemoteHotkeyClientModel _client;
+    [Inject] private IClient _client;
 
     public void SendInternalCommand(byte commandId)
     {

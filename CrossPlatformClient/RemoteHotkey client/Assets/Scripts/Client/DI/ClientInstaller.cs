@@ -8,13 +8,13 @@ public class ClientInstaller : MonoInstaller
     [SerializeField][Min(1000)] private int _graphicsBuffer = 200000;
     [SerializeField][Min(0.01f)] private float _listenReconnectDellay = 5f;
 
-    private RemoteHotkeyClientModel _client;
+    private IClient _client;
 
     public override void InstallBindings()
     {
-        _client = new RemoteHotkeyClientModel();
+        _client = new JsClientModel();
 
-        Container.Bind<RemoteHotkeyClientModel>().FromInstance(_client).AsSingle().NonLazy();
+        Container.Bind<IClient>().FromInstance(_client).AsSingle().NonLazy();
     }
 
     private void OnDestroy()

@@ -7,7 +7,7 @@ public class ClientStatusView : MonoBehaviour
     [SerializeField] private GameObject _panel;
     [SerializeField] protected TextMeshProUGUI _statusText;
 
-    [Inject] private RemoteHotkeyClientModel _clientModel;
+    [Inject] private IClient _clientModel;
 
     private void Awake()
     {

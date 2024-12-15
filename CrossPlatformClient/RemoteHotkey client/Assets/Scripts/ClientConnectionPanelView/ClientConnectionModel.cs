@@ -7,7 +7,7 @@ public class ClientConnectionModel : MonoBehaviour
 {
     [SerializeField] private bool _listening;
 
-    [Inject] private RemoteHotkeyClientModel _client;
+    [Inject] private IClient _client;
 
     public event Action<string> ipSaveLoaded;
     public event Action<string> userNameLoaded;

@@ -1,15 +1,16 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.IO;
 using UnityEngine;
 
 public class DesktopModel
 {
-    private RemoteHotkeyClientModel _client;
+    private IClient _client;
     private Texture2D _tempTexture;
 
     public event Action<Texture2D> received;
 
-    public DesktopModel(RemoteHotkeyClientModel client)
+    public DesktopModel(IClient client)
     {
         _client = client;
         _tempTexture = new Texture2D(1920, 1080, TextureFormat.RGBA32, false);

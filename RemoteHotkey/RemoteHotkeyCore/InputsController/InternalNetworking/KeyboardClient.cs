@@ -18,6 +18,11 @@ public class KeyboardClient
     {
         _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+        new Thread(Start).Start();
+    }
+
+    private void Start()
+    {
         ListenLoop();
     }
 

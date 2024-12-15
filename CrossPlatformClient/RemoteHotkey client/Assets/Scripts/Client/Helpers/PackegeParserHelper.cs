@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Text;
 using UnityEngine;
 
 public class PackegeParserHelper
@@ -20,6 +22,14 @@ public class PackegeParserHelper
         }
 
         return result;
+    }
+
+    public byte[] ConstructMessage(byte packegeMarkCode, byte[] message, string sourceUserName)
+    {
+        byte[] userName = Encoding.ASCII.GetBytes(sourceUserName);
+        byte[] data = new byte[1] { packegeMarkCode }.Concat(userName).Concat(new byte[1] { (byte)ClientConstantsHolder.USER_NAME_SEPARATE_CHAR }).Concat(message).ToArray();
+
+        return data;
     }
 
     private int GetStartIndex(byte[] message)

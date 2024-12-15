@@ -10,7 +10,13 @@ server.on("connection", (ws) => {
 
     ws.on("message", (message) => {
         broadcast(message);
-        console.log("Received " + message);
+
+        if (message.length <= 50){
+            console.log("Received " + message);
+        }
+        else{
+            console.log("Server receive tool nong message: " + message.length);
+        }
     });
 });
 

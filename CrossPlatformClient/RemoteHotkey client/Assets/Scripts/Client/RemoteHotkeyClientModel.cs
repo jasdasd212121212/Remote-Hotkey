@@ -5,7 +5,7 @@ using System.Text;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class RemoteHotkeyClientModel : IDisposable
+public class RemoteHotkeyClientModel : IClient
 {
     private Socket _sendSocket;
     private PackegeParserHelper _parserHelper;
@@ -16,8 +16,6 @@ public class RemoteHotkeyClientModel : IDisposable
     private string _ip;
 
     private bool _connected;
-
-    private const char USER_NAME_SEPARATE_CHAR = '#';
 
     public event Action connected;
     public event Action disconnected;
@@ -32,7 +30,7 @@ public class RemoteHotkeyClientModel : IDisposable
     public async UniTask Connect(string ip, string userName)
     {
         _sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        _parserHelper = new PackegeParserHelper(USER_NAME_SEPARATE_CHAR);
+        _parserHelper = new PackegeParserHelper(ClientConstantsHolder.USER_NAME_SEPARATE_CHAR);
 
         if (_sendSocket == null || _sendSocket.Connected == true)
         {
@@ -81,12 +79,9 @@ public class RemoteHotkeyClientModel : IDisposable
 
     public async UniTask SendData(byte packegeMarkCode, byte[] message)
     {
-        byte[] userName = Encoding.ASCII.GetBytes(_userName);
-        byte[] data = new byte[1] { packegeMarkCode }.Concat(userName).Concat(new byte[1] { (byte)USER_NAME_SEPARATE_CHAR }).Concat(message).ToArray();
-
         try
         {
-            await _sendSocket.SendAsync(data, SocketFlags.None);
+            await _sendSocket.SendAsync(_parserHelper.ConstructMessage(packegeMarkCode, message, _userName), SocketFlags.None);
         }
         catch (Exception e)
         {
