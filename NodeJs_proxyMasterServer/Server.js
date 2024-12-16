@@ -28,14 +28,14 @@ server.on("listening", () => {console.log("Server listening")});
 function handleSocket(message, ws){
     var parsedMessage = "" + message;
 
-    const packege = packegeHandler.handle(parsedMessage);
+    const packege = packegeHandler.handle(parsedMessage, message);
     const username = packegeHandler.extractUsername(packege.message);
 
     if(packege.action == "connection"){
         sender.registerUser(username, ws);
     }
     else if(packege.action == "send"){
-        sender.sendToUser(username, packege.message);
+        sender.sendToUser(username, packege.rawMessage, ws);
     }
     else{
         console.log("Received undefind packege action: " + packege.action);

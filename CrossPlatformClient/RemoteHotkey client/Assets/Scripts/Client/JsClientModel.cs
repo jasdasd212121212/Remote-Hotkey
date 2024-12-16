@@ -1,5 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.Linq;
+using System.Text;
 using WebSocketSharp;
 
 public class JsClientModel : IClient
@@ -24,12 +26,10 @@ public class JsClientModel : IClient
         _socket = new WebSocket($"ws://{ip}:12345");
         _userName = userName;
 
-        _socket.ConnectAsync();
-
-        await UniTask.WaitWhile(() => _socket.IsAlive == true);
+        _socket.Connect();
+        _socket.Send($"connection:@{userName}#0");
 
         _socket.OnMessage += OnMessageReceived;
-
         connected?.Invoke();
     }
 
@@ -53,7 +53,10 @@ public class JsClientModel : IClient
 
     public async UniTask SendData(byte packegeMarkCode, byte[] message)
     {
-        _socket.Send(_parserHelper.ConstructMessage(packegeMarkCode, message, _userName));
+        byte[] rawMessage = _parserHelper.ConstructMessage(packegeMarkCode, message, _userName);
+        byte[] resultMessage = Encoding.ASCII.GetBytes("send:").Concat(rawMessage).ToArray();
+
+        _socket.Send(resultMessage);
         await UniTask.Delay(0);
     }
 

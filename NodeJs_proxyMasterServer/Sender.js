@@ -3,6 +3,8 @@ var connectedSockets = []
 
 var connectionsCount = 0;
 
+const maxConnectionsPerUser = 2;
+
 function broadcast(message, server){
     server.clients.forEach(client => {
         client.send(message);
@@ -13,10 +15,15 @@ function registerUser(username, socket){
     connectionsCount++; 
 
     try{
-        var name = connectionsCount + "-" + username;
+        if(countOfUsers(username) < maxConnectionsPerUser){
+            var name = connectionsCount + "-" + username;
 
-        usernames.push(name);
-        connectedSockets.push(socket);
+            usernames.push(name);
+            connectedSockets.push(socket);
+        }
+        else{
+            socket.close();
+        }
     }
     catch{
         console.log("invalid username: " + username);
@@ -44,9 +51,9 @@ function deleteUser(socket){
     }
 }
 
-function sendToUser(username, data){
+function sendToUser(username, data, wsOrigin){
     for(var i = 0; i < usernames.length; i++){
-        if(extractUsername(usernames[i]) == username){
+        if(extractUsername(usernames[i]) == username && connectedSockets[i] != wsOrigin){
             connectedSockets[i].send(data);
         }
     }
@@ -67,6 +74,18 @@ function extractUsername(fullName){
     }
 
     return result;
+}
+
+function countOfUsers(username){
+    var count = 0;
+
+    for(var i = 0; i < usernames.length; i++){
+        if(extractUsername(usernames[i]) == username){
+            count++;
+        }
+    }
+
+    return count;
 }
 
 export { broadcast, registerUser, deleteUser, sendToUser }

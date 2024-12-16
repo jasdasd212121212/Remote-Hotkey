@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using System;
-using System.IO;
 using UnityEngine;
 
 public class DesktopModel
@@ -13,7 +12,7 @@ public class DesktopModel
     public DesktopModel(IClient client)
     {
         _client = client;
-        _tempTexture = new Texture2D(1920, 1080, TextureFormat.RGBA32, false);
+        _tempTexture = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
 
         _client.receivedClientDirectedMessage += Convert;
     }
@@ -29,18 +28,18 @@ public class DesktopModel
     }
 
     private async UniTask ConverAsync(byte[] message)
-    {
+    { 
         await UniTask.SwitchToMainThread();
 
         try
         {
             _tempTexture.LoadImage(message);
         }
-        catch 
+        catch (Exception e)
         {
-            Debug.LogError("Texture error!");
+            Debug.LogError($"Texture error! {e.Message}");
         }
-        
+
         received?.Invoke(_tempTexture);
     }
 }

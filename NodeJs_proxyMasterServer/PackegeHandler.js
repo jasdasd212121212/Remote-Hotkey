@@ -1,20 +1,27 @@
 const packege = {
     action: "connection/send",
-    message: "some message"
+    message: "some message",
+    rawMessage: []
 }
 
 const actionParseChar = ":";
 const usernameParseChar = "#";
 
-function handle(message){
+function handle(message, source){
     const newPackege = structuredClone(packege);
     var isAddingAction = true;
+    var startIndex = 0;
 
     newPackege.action = "";
     newPackege.message = "";
+    newPackege.rawMessage = [];
 
     for(var i = 0; i < message.length; i++){
         if(message[i] === actionParseChar){
+            if(isAddingAction === true){
+                startIndex = i;
+            }
+
             isAddingAction = false;
         }
 
@@ -28,6 +35,10 @@ function handle(message){
                 newPackege.message += message[i];
             }
         }
+    }
+
+    for(var i = startIndex + 1; i < source.length; i++){
+        newPackege.rawMessage.push(source[i]);
     }
 
     return newPackege;

@@ -59,9 +59,11 @@ public class JsProxiedServer : IServer
         string debugMessage = formattedMessage.Length < 1000 ? Encoding.ASCII.GetString(formattedMessage) : $"Message too long. Length: {formattedMessage.Length}";
         Console.WriteLine($"ProxiedServer -> send to clients: {debugMessage}");
 
+        byte[] resultedMessage = Encoding.ASCII.GetBytes("send:").Concat(formattedMessage).ToArray();
+
         try
         {
-            _socket.Send(formattedMessage);
+            _socket.Send(resultedMessage);
         }
         catch
         {
@@ -124,7 +126,9 @@ public class JsProxiedServer : IServer
     private void Conncect()
     {
         _socket = new WebSocket($"ws://{_ip}:12345");
+
         _socket.Connect();
+        _socket.Send($"connection:@{_userName}#0");
 
         _socket.OnMessage += OnMesageReceived;
     }
