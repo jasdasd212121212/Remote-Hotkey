@@ -2,11 +2,16 @@ const WebSocket = require("ws");
 const packegeHandler = require("./PackegeHandler");
 const view = require("./View");
 const sender = require("./Sender");
+const configLoader = require("./ConfigLoader");
+
+const fs = require("fs");
+
+const ip = configLoader.loadConfig(fs).IP;
 
 const server = new WebSocket.Server({
-    ip: "192.168.0.200",
+    host: ip,
     port: 12345
-}, () => console.log("Server started!"));
+}, () => console.log("Server started on ip: " + ip));
 
 server.on("connection", (ws) => {
     console.log("Connected");
@@ -14,8 +19,6 @@ server.on("connection", (ws) => {
     ws.on("message", (message) => {
         view.display(message);
         handleSocket(message, ws);
-
-        //sender.broadcast(message, server);
     });
 
     ws.on('close', () => {
