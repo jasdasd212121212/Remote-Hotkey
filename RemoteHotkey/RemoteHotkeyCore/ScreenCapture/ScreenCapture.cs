@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Text;
 
 namespace RemoteHotkey.ScreenCapture;
 
@@ -9,11 +9,19 @@ public class ScreenCapture
     private int _width;
     private int _height;
 
+    private int _compressionLevel;
+
     private Bitmap _screen;
-    private const string FILE_NAME = "temp.jpeg";
+
+    private const string FILE_NAME = "temp.png";
+    private const string COMPRESSED_FILE_NAME = "temp_compressed.png";
+
+    private readonly ImageFormat IMAGE_FORMAT = ImageFormat.Png;
 
     public ScreenCapture()
     {
+        _compressionLevel = 2;
+
         GetScreen(ref _width, ref _height);
         _screen = new Bitmap(_width, _height);
     }
@@ -34,10 +42,18 @@ public class ScreenCapture
                 captureGraphics.CopyFromScreen(bounds.X, bounds.Y, 0, 0, bounds.Size);
             }
 
-            captureBitmap.Save(FILE_NAME, ImageFormat.Jpeg);
+            captureBitmap.Save(FILE_NAME, IMAGE_FORMAT);
         }
 
-        return File.ReadAllBytes(FILE_NAME);
+        using (Image image = Image.FromFile(FILE_NAME))
+        {
+            using (Bitmap resizedMap = ResizeImage(image, _width / _compressionLevel, _height / _compressionLevel))
+            {
+                resizedMap.Save(COMPRESSED_FILE_NAME, IMAGE_FORMAT);
+            }
+        }
+
+        return File.ReadAllBytes(COMPRESSED_FILE_NAME);
     }
 
     private void GetScreen(ref int width, ref int height)
@@ -61,5 +77,30 @@ public class ScreenCapture
                 throw new Exception("Throw some exception");
             }
         }
+    }
+
+    public Bitmap ResizeImage(Image image, int width, int height)
+    {
+        var destRect = new Rectangle(0, 0, width, height);
+        var destImage = new Bitmap(width, height);
+
+        destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+        using (var graphics = Graphics.FromImage(destImage))
+        {
+            graphics.CompositingMode = CompositingMode.SourceCopy;
+            graphics.CompositingQuality = CompositingQuality.Default;
+            graphics.InterpolationMode = InterpolationMode.Default;
+            graphics.SmoothingMode = SmoothingMode.Default;
+            graphics.PixelOffsetMode = PixelOffsetMode.Default;
+
+            using (var wrapMode = new ImageAttributes())
+            {
+                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+            }
+        }
+
+        return destImage;
     }
 }
