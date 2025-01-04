@@ -20,10 +20,8 @@ public static class GlobalEntryPoint
 
         Console.WriteLine("Entry -> starting...");
 
-        Thread.Sleep(new Random().Next(1000, 2000));
-
-        _ip = config.Ip;
-        _userName = config.Username;
+        _ip = config.Data.Ip;
+        _userName = config.Data.UserName;
 
         Start();
     }

@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using RemoteHotkeyCore;
 
 namespace RemoteHotkey.ScreenCapture;
 
@@ -20,7 +21,7 @@ public class ScreenCapture
 
     public ScreenCapture()
     {
-        _compressionLevel = 2;
+        _compressionLevel = Math.Clamp(new Config().Data.CompressionLevel, 1, int.MaxValue);
 
         GetScreen(ref _width, ref _height);
         _screen = new Bitmap(_width, _height);
