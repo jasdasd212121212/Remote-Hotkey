@@ -1,3 +1,0 @@
-﻿using RemoteHotkeyCore;
-
-GlobalEntryPoint.Boot();
