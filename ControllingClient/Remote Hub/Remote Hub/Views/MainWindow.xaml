@@ -23,6 +23,8 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="50"/>
             <RowDefinition Height="65"/>
         </Grid.RowDefinitions>
@@ -31,7 +33,7 @@
         <TextBox Text="{Binding Ip}" Grid.Column="1" Grid.Row="2"/>
 
         <Grid Grid.Column="1" Grid.Row="4">
-            <Label Content="Compression level:"/>
+            <Label Content="Username:"/>
         </Grid>
 
         <Grid Grid.Column="1" Grid.Row="5">
@@ -46,6 +48,16 @@
             <TextBox Text="{Binding CompressionLevel}"/>
         </Grid>
 
-        <Button Command="{Binding ConnectButton}" Grid.Column="1" Grid.Row="10" Content="Connect"/>
+        <Grid Grid.Column="1" Grid.Row="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.95*"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Label Content="Use keyboard module:" VerticalAlignment="Center"/>
+            <CheckBox IsChecked="{Binding UseKeyboardModule}" Grid.Column="1" VerticalAlignment="Center"/>
+        </Grid>
+
+        <Button Command="{Binding ConnectButton}" Grid.Column="1" Grid.Row="12" Content="Connect"/>
     </Grid>
 </Window>
