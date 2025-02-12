@@ -9,10 +9,8 @@ namespace RemoteHotkeyCore.EnterpreterEntry;
 
 public class EnterpreterEntryPoint
 {
-    public CommandsPerformer Construct(out CommandLanguageLexer commandLexer)
+    public CommandsPerformer Construct(out CommandLanguageLexer commandLexer, InputModel inputModel)
     {
-        InputModel inputModel = new InputModel();
-
         CommandsPerformer performer = new CommandsPerformer(inputModel);
 
         CommandLanguageLexer lexer = new CommandLanguageLexer(

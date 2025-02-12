@@ -1,5 +1,6 @@
 ﻿using RemoteHotkey.CommandLanguage;
 using RemoteHotkey.CommandSystem;
+using RemoteHotkey.InputsConstrollSystem;
 using RemoteHotkey.Network.Server;
 using RemoteHotkey.ScreenCapture;
 using RemoteHotkeyCore.EnterpreterEntry;
@@ -11,8 +12,10 @@ public class EntryPoint
 {
     public EntryPoint(IServer server) 
     {
-        CommandsPerformer performer = new EnterpreterEntryPoint().Construct(out CommandLanguageLexer lexer);
+        InputModel inputModel = new InputModel();
+
+        CommandsPerformer performer = new EnterpreterEntryPoint().Construct(out CommandLanguageLexer lexer, inputModel);
         new ServerEntryPoint(server, performer, lexer);
-        new ScreenCaptureNetworkSender(server);
+        new ScreenCaptureNetworkSender(server, inputModel.MouseController);
     }
 }

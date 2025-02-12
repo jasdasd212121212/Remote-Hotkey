@@ -1,4 +1,5 @@
-﻿using RemoteHotkey.Network.Server;
+﻿using RemoteHotkey.InputsConstrollSystem;
+using RemoteHotkey.Network.Server;
 
 namespace RemoteHotkey.ScreenCapture;
 
@@ -7,9 +8,9 @@ public class ScreenCaptureNetworkSender
     private ScreenCapture _screen;
     private IServer _server;
 
-    public ScreenCaptureNetworkSender(IServer server)
+    public ScreenCaptureNetworkSender(IServer server, MouseController mouse)
     {
-        _screen = new ScreenCapture();
+        _screen = new ScreenCapture(mouse);
         _server = server;
 
         CaptureLoop();

@@ -26,6 +26,9 @@ public class MouseController
     [DllImport("User32.dll", EntryPoint = "GetSystemMetrics", CallingConvention = CallingConvention.Winapi)]
     internal static extern int InternalGetSystemMetrics(int value);
 
+    [DllImport("user32.dll")]
+    private static extern bool GetCursorPos(out POINT lpPoint);
+
     public void SetMousePosition(Vector2 position, bool isAbsolute)
     {
         Vector2 screenSize = new Vector2(InternalGetSystemMetrics(0), InternalGetSystemMetrics(1));
@@ -89,5 +92,19 @@ public class MouseController
 
         mouse_event(down, 0, 0, 0, 0);
         mouse_event(up, 0, 0, 0, 0);
+    }
+
+    public POINT GetMousePosition()
+    {
+        POINT pt;
+        GetCursorPos(out pt);
+        return pt;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct POINT
+    {
+        public int x;
+        public int y;
     }
 }

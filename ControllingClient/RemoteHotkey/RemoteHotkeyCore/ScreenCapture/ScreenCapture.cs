@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using RemoteHotkey.InputsConstrollSystem;
 using RemoteHotkeyCore;
 
 namespace RemoteHotkey.ScreenCapture;
@@ -12,6 +13,7 @@ public class ScreenCapture
 
     private int _compressionLevel;
 
+    private MouseController _mouse;
     private Bitmap _screen;
 
     private const string FILE_NAME = "temp.png";
@@ -19,8 +21,9 @@ public class ScreenCapture
 
     private readonly ImageFormat IMAGE_FORMAT = ImageFormat.Png;
 
-    public ScreenCapture()
+    public ScreenCapture(MouseController mouse)
     {
+        _mouse = mouse;
         _compressionLevel = Math.Clamp(new Config().Data.CompressionLevel, 1, int.MaxValue);
 
         GetScreen(ref _width, ref _height);
@@ -41,6 +44,8 @@ public class ScreenCapture
             using (Graphics captureGraphics = Graphics.FromImage(captureBitmap))
             {
                 captureGraphics.CopyFromScreen(bounds.X, bounds.Y, 0, 0, bounds.Size);
+
+                DrawCursor(captureGraphics);
             }
 
             captureBitmap.Save(FILE_NAME, IMAGE_FORMAT);
@@ -76,6 +81,19 @@ public class ScreenCapture
             if (!int.TryParse(record.GetPropertyValue("CurrentVerticalResolution").ToString(), out height))
             {
                 throw new Exception("Throw some exception");
+            }
+        }
+    }
+
+    private void DrawCursor(Graphics captureGraphics)
+    {
+        MouseController.POINT mousePoint = _mouse.GetMousePosition();
+
+        if (mousePoint.x < _screen.Width && mousePoint.y < _screen.Height)
+        {
+            for (int i = 15; i < 25; i++)
+            {
+                captureGraphics.DrawLine(new Pen(Brushes.LightGray), new Point(mousePoint.x, mousePoint.y), new Point(mousePoint.x + 10, mousePoint.y + i));
             }
         }
     }
