@@ -1,15 +1,12 @@
 using Zenject;
 
-public abstract class DesktopControllPresenterInstallerBase<TPresenter, TView> : MonoInstaller 
+public abstract class DesktopControllPresenterInstallerBase<TPresenter, TView> : NonGenericPresenterInstallerBase 
     where TView : DesktopControllViewBase
     where TPresenter : DesktopControllPresenterBase<TView>
 {
-    [Inject] private TView _view;
-    [Inject] private DesktopControllModel _model;
-
-    public override void InstallBindings()
+    public override void Install(DiContainer container, DesktopControllViewBase view, DesktopControllModel model)
     {
-        Container.Bind<TPresenter>().FromInstance(GetInstance(_view, _model)).AsSingle().Lazy();
+        container.Bind<TPresenter>().FromInstance(GetInstance(view as TView, model)).AsSingle().Lazy();
     }
 
     protected abstract TPresenter GetInstance(TView view, DesktopControllModel model);

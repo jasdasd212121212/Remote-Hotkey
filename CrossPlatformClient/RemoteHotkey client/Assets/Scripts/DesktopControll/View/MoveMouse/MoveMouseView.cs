@@ -23,6 +23,6 @@ public class MoveMouseView : DesktopControllViewBase
 
     private void OnMouseMove()
     {
-        mouseMoved?.Invoke(new Vector2(Input.GetAxis(MOUSE_X), Input.GetAxis(MOUSE_Y)));
+        mouseMoved?.Invoke(new Vector2(Input.GetAxis(MOUSE_X), -Input.GetAxis(MOUSE_Y)));
     }
 }

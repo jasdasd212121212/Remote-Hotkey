@@ -10,7 +10,8 @@ public class DesktopControllModelInstaller : MonoInstaller
         Container.Bind<DesktopControllModel>().FromInstance(new DesktopControllModel
                 (
                     _client, 
-                    new MoveMouseCommand()
+                    new MoveMouseCommand(),
+                    new ClickMouseButtonCommand()
                 )
             ).AsSingle().NonLazy();
     }

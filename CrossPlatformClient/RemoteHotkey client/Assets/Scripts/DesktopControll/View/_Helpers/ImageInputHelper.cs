@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
-public class ImageInputHelper : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler
+public class ImageInputHelper : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler, IPointerClickHandler
 {
     [SerializeField][Min(0.001f)] private float _pointerMoveDelay = 0.1f;
 
@@ -27,8 +27,14 @@ public class ImageInputHelper : MonoBehaviour, IPointerDownHandler, IPointerUpHa
     public event Action pointerUp;
     public event Action pointerDown;
     public event Action pointerMove;
+    public event Action pointerClick;
 
     public event Action hoverChange;
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        pointerClick?.Invoke();
+    }
 
     public void OnPointerDown(PointerEventData eventData)
     {
