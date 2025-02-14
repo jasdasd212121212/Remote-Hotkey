@@ -11,7 +11,7 @@ public class TestCommandsFactory : CommandsAbstractFactory
         {
             new MouseMoveCommand(new Vector2(-2000, -2000)),
             new MouseMoveCommand(new Vector2(500, 250)),
-            new MouseClickCommand(MouseButtonsEnum.Left)
+            new MouseClickCommand(MouseButtonsEnum.Left, RemoteHotkeyCore.InputsController.Controllers.MouseActionEnum.Click)
         };
     }
 }

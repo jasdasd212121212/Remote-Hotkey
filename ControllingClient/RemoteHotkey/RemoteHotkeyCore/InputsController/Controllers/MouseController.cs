@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using RemoteHotkeyCore.InputsController.Controllers;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace RemoteHotkey.InputsConstrollSystem;
@@ -65,7 +66,7 @@ public class MouseController
         _mouseLocked = false;
     }
 
-    public void Click(MouseButtonsEnum button)
+    public void Click(MouseButtonsEnum button, MouseActionEnum action)
     {
         uint down, up;
 
@@ -90,8 +91,15 @@ public class MouseController
                 throw new NotSupportedException($"{nameof(MouseButtonsEnum)} type: {button} are not supported");
         }
 
-        mouse_event(down, 0, 0, 0, 0);
-        mouse_event(up, 0, 0, 0, 0);
+        if (action == MouseActionEnum.Hold || action == MouseActionEnum.Click)
+        {
+            mouse_event(down, 0, 0, 0, 0);
+        }
+       
+        if (action == MouseActionEnum.Release || action == MouseActionEnum.Click)
+        {
+            mouse_event(up, 0, 0, 0, 0);
+        }
     }
 
     public POINT GetMousePosition()

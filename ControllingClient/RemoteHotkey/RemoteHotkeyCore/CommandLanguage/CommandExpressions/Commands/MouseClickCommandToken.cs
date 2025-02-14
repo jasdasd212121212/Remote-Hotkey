@@ -1,6 +1,7 @@
 ﻿using RemoteHotkey.CommandLanguage.SyntaxVisitor;
 using RemoteHotkey.CommandSystem;
 using RemoteHotkey.InputsConstrollSystem;
+using RemoteHotkeyCore.InputsController.Controllers;
 
 namespace RemoteHotkey.CommandLanguage;
 
@@ -16,10 +17,19 @@ public class MouseClickCommandToken : ICommandToken
         set
         {
             string argument = value[0].Argument;
+            string actionArgument = value.Length > 1 ? value[1].Argument : "NaA";
 
             if (argument != "R" && argument != "L" && argument != "M")
             {
                 throw new InvalidDataException($"Critical error -> invalid argument; Token: {this} can take only: 'R' - Right; 'L' - Left or 'M' - Middle mouse buttons indexes");
+            }
+
+            if (value.Length > 1)
+            {
+                if (actionArgument != "H" && actionArgument != "R" && actionArgument != "C")
+                {
+                    throw new InvalidDataException($"Critical errpr -> invalid argument; Token: {this} can take only: 'H' - Hold or 'R' - Release or 'C' - Click arguments as a mouse actions");
+                }
             }
 
             _arguments = value;
@@ -34,21 +44,47 @@ public class MouseClickCommandToken : ICommandToken
     public IInputCommand ConstructCommand()
     {
         string argument = _arguments[0].Argument;
-        string[] indexedArguments = new string[] { "L", "R", "M" };
+        string[] indexedArguments = ["L", "R", "M"];
+        string[] indexedActionArguments = ["H", "R", "C"];
 
-        for (int i = 0; i < indexedArguments.Length; i++)
+        int enumIndexOfButton = ConvertStringArgumentToEnum(indexedArguments, 0, out bool hasButton);
+        int enumIndexOfAction = ConvertStringArgumentToEnum(indexedActionArguments, 1, out bool hasAction);
+
+        MouseButtonsEnum button = (MouseButtonsEnum)enumIndexOfButton;
+        MouseActionEnum action = MouseActionEnum.Click;
+
+        if (hasAction)
         {
-            if (argument == indexedArguments[i])
-            {
-                return new MouseClickCommand((MouseButtonsEnum)i);
-            }
+            action = (MouseActionEnum)enumIndexOfAction;
         }
 
-        throw new InvalidDataException();
+        return new MouseClickCommand(button, action);
     }
 
     public IToken CreateNew()
     {
         return new MouseClickCommandToken();
+    }
+
+    private int ConvertStringArgumentToEnum(string[] indexArgs, int arguemntIndex, out bool hasArgument)
+    {
+        if (arguemntIndex >= _arguments.Length)
+        {
+            hasArgument = false;
+            return 0;
+        }
+
+        string currentArgument = _arguments[arguemntIndex].Argument;
+
+        for (int i = 0; i < indexArgs.Length; i++)
+        {
+            if (currentArgument == indexArgs[i])
+            {
+                hasArgument = true;
+                return i;
+            }
+        }
+
+        throw new ArgumentException($"Invalid argument: {currentArgument}");
     }
 }
