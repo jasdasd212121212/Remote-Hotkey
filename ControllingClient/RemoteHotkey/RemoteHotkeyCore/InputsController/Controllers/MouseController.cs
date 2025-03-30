@@ -19,6 +19,7 @@ public class MouseController
     private const int MOUSE_MIDDLE_DOWN = 0x0020;
     private const int MOUSE_MIDDLE_UP = 0x0040;
 
+    private const uint MOUSEEVENTF_WHEEL = 0x0800;
     private const int MOUSE_ABSOLUTE = 0x8000;
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
@@ -100,6 +101,11 @@ public class MouseController
         {
             mouse_event(up, 0, 0, 0, 0);
         }
+    }
+
+    public void ScrollMouseWheel(int amount)
+    {
+        mouse_event(MOUSEEVENTF_WHEEL, 0, 0, (uint)amount, 0);
     }
 
     public POINT GetMousePosition()

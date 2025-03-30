@@ -2,22 +2,37 @@ using UnityEngine;
 
 public class MouseClicksPresenter : DesktopControllPresenterBase<MouseClicksView>
 {
+    private const string UP_KEY_ACTION_ARGUMENT = "R";
+    private const string DOWN_KEY_ACTION_ARGUMENT = "H";
+
     public MouseClicksPresenter(MouseClicksView view, DesktopControllModel model) : base(view, model)
     {
-        View.mouseClicked += OnClick;
+        View.mouseDown += OnDown;
+        View.mouseUp += OnUp;
     }
 
     ~MouseClicksPresenter() 
     {
         if (View != null)
         {
-            View.mouseClicked -= OnClick;
+            View.mouseDown -= OnDown;
+            View.mouseUp -= OnUp;
         }
     }
 
-    private void OnClick(CallbackMouseButton mouseButton)
+    private void OnDown(CallbackMouseButton mouseButton)
     {
-        Model.ExecuteCommand<ClickMouseButtonCommand>(GetArgumentMouse(mouseButton));
+        ExecuteCommand(mouseButton, true);
+    }
+
+    private void OnUp(CallbackMouseButton mouseButton)
+    {
+        ExecuteCommand(mouseButton, false);
+    }
+
+    private void ExecuteCommand(CallbackMouseButton mouseButton, bool isDown)
+    {
+        Model.ExecuteCommand<ClickMouseButtonCommand>(GetArgumentMouse(mouseButton), isDown ? DOWN_KEY_ACTION_ARGUMENT : UP_KEY_ACTION_ARGUMENT);
     }
 
     private string GetArgumentMouse(CallbackMouseButton sourceButton)

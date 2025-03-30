@@ -53,6 +53,11 @@ public class JsClientModel : IClient
 
     public async UniTask SendData(byte packegeMarkCode, byte[] message)
     {
+        if (message == null || message.Length == 0 || _userName == null)
+        {
+            return;
+        }
+
         byte[] rawMessage = _parserHelper.ConstructMessage(packegeMarkCode, message, _userName);
         byte[] resultMessage = Encoding.ASCII.GetBytes("send:").Concat(rawMessage).ToArray();
 

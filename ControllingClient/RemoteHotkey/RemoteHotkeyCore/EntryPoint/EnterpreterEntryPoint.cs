@@ -23,7 +23,8 @@ public class EnterpreterEntryPoint
                 new ExecuteBatchCommandToken(),
                 new DebugCommandToken(),
                 new RelativeMouseMoveCommandToken(),
-                new KeyboardButtonCommandToken()
+                new KeyboardButtonCommandToken(),
+                new ScrollMouseWheelCommandToken()
             },
 
             new IExpressionToken[]

@@ -9,18 +9,6 @@ public class ImageInputHelper : MonoBehaviour, IPointerDownHandler, IPointerUpHa
     [SerializeField][Min(0.001f)] private float _pointerMoveDelay = 0.1f;
 
     private float _nextMoveCallbackTime;
-    private bool _isHover;
-
-    public bool IsHover 
-    {
-        get => _isHover;
-
-        private set
-        {
-            _isHover = value;
-            hoverChange?.Invoke();
-        }
-    }
 
     public event Action pointerEnter;
     public event Action pointerExit;
@@ -38,19 +26,16 @@ public class ImageInputHelper : MonoBehaviour, IPointerDownHandler, IPointerUpHa
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        IsHover = true;
         pointerDown?.Invoke();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        IsHover = true;
         pointerEnter?.Invoke();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        IsHover = false;
         pointerExit?.Invoke();
     }
 
@@ -65,7 +50,6 @@ public class ImageInputHelper : MonoBehaviour, IPointerDownHandler, IPointerUpHa
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        IsHover = false;
         pointerUp?.Invoke();
     }
 }

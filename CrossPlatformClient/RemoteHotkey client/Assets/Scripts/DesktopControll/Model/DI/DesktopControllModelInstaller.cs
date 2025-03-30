@@ -11,7 +11,9 @@ public class DesktopControllModelInstaller : MonoInstaller
                 (
                     _client, 
                     new MoveMouseCommand(),
-                    new ClickMouseButtonCommand()
+                    new ClickMouseButtonCommand(),
+                    new RotateMouseWheelCommand(),
+                    new PressKeyKeyboardCommand()
                 )
             ).AsSingle().NonLazy();
     }
