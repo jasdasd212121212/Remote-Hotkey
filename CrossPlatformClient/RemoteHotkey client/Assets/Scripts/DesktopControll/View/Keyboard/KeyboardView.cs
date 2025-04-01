@@ -11,8 +11,8 @@ public class KeyboardView : DesktopControllViewBase
 
     private bool _isRunned;
 
-    public event Action<string> keyDown;
-    public event Action<string> keyUp;
+    public event Action<KeyCode> keyDown;
+    public event Action<KeyCode> keyUp;
 
     public KeyboardView(ImageInputHelper image) : base(image)
     {
@@ -38,7 +38,7 @@ public class KeyboardView : DesktopControllViewBase
             {
                 if (Input.GetKeyDown(key) && KeyIsNotMouse(key))
                 {
-                    keyDown?.Invoke(GetOverridedKey(key.ToString()));
+                    keyDown?.Invoke(key);
                 }
             }
 
@@ -46,17 +46,12 @@ public class KeyboardView : DesktopControllViewBase
             {
                 if (Input.GetKeyUp(key) && KeyIsNotMouse(key))
                 {
-                    keyUp?.Invoke(GetOverridedKey(key.ToString()));
+                    keyUp?.Invoke(key);
                 }
             }
 
             await UniTask.WaitForSeconds(Time.deltaTime, cancellationToken: _cancellation.Token);
         }
-    }
-
-    private string GetOverridedKey(string key)
-    {
-        return key;
     }
 
     private bool KeyIsNotMouse(KeyCode key)
