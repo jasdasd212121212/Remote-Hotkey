@@ -13,6 +13,22 @@ public class KeyboardLowLevelEmulator
         SendInput(1, Inputs, INPUT.Size);
     }
 
+    public void KeyDown(ScanCodeShort key)
+    {
+        var Inputs = new INPUT[1];
+        Inputs[0].type = 1; // 1 = Keyboard Input
+        Inputs[0].U.ki = new KEYBDINPUT { wScan = key, dwFlags = KEYEVENTF.SCANCODE };
+        SendInput(1, Inputs, INPUT.Size);
+    }
+
+    public void KeyUp(ScanCodeShort key)
+    {
+        var Inputs = new INPUT[1];
+        Inputs[0].type = 1; // 1 = Keyboard Input
+        Inputs[0].U.ki = new KEYBDINPUT { wScan = key, dwFlags = KEYEVENTF.KEYUP | KEYEVENTF.SCANCODE };
+        SendInput(1, Inputs, INPUT.Size);
+    }
+
     /// <summary>
     /// Declaration of external SendInput method
     /// </summary>

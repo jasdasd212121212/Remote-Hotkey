@@ -42,16 +42,16 @@ public class KeyboardController
         switch (keyboardEvent)
         {
             case KeyboardKeyEvent.Hold:
-                _keyboardEmulator.Send(result, KeyboardLowLevelEmulator.KEYEVENTF.SCANCODE);
+                _keyboardEmulator.KeyDown(result);
                 break;
 
             case KeyboardKeyEvent.Release:
-                _keyboardEmulator.Send(result, KeyboardLowLevelEmulator.KEYEVENTF.KEYUP);
+                _keyboardEmulator.KeyUp(result);
                 break;
 
             case KeyboardKeyEvent.Tap:
-                _keyboardEmulator.Send(result, KeyboardLowLevelEmulator.KEYEVENTF.SCANCODE);
-                _keyboardEmulator.Send(result, KeyboardLowLevelEmulator.KEYEVENTF.KEYUP);
+                _keyboardEmulator.KeyDown(result);
+                _keyboardEmulator.KeyUp(result);
                 break;
 
             default:
