@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class MouseWheelView : DesktopControllViewBase
 {
+    private CursorStateMachinePresenter _cursorPresenter;
     private CancellationTokenSource _cancellation;
 
     private float _updateDelay;
@@ -28,14 +29,22 @@ public class MouseWheelView : DesktopControllViewBase
         _cancellation.Cancel();
     }
 
+    public void SetCursorPresenter(CursorStateMachinePresenter presenter)
+    {
+        _cursorPresenter = presenter;
+    }
+
     private async UniTask UpdateLoop()
     {
         while (true)
         {
-            if (Input.mouseScrollDelta != Vector2.zero && Time.time > _nextSendTime)
+            if (_cursorPresenter != null)
             {
-                wheelRotated?.Invoke(Input.mouseScrollDelta.y);
-                _nextSendTime = Time.time + _sendDelay;
+                if (Input.mouseScrollDelta != Vector2.zero && Time.time > _nextSendTime && _cursorPresenter.IsLocked == true)
+                {
+                    wheelRotated?.Invoke(Input.mouseScrollDelta.y);
+                    _nextSendTime = Time.time + _sendDelay;
+                }
             }
 
             await UniTask.WaitForSeconds(_updateDelay, cancellationToken: _cancellation.Token);

@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
-public class ImageInputHelper : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler, IPointerClickHandler
+public class ImageInputHelper : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [SerializeField][Min(0.001f)] private float _pointerMoveDelay = 0.1f;
 
@@ -24,11 +24,6 @@ public class ImageInputHelper : MonoBehaviour, IPointerDownHandler, IPointerUpHa
         pointerClick?.Invoke();
     }
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        pointerDown?.Invoke();
-    }
-
     public void OnPointerEnter(PointerEventData eventData)
     {
         pointerEnter?.Invoke();
@@ -39,17 +34,26 @@ public class ImageInputHelper : MonoBehaviour, IPointerDownHandler, IPointerUpHa
         pointerExit?.Invoke();
     }
 
-    public void OnPointerMove(PointerEventData eventData)
+    private void Update()
     {
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
+        {
+            pointerDown?.Invoke();
+        }
+
+        if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(2))
+        {
+            pointerUp?.Invoke();
+        }
+
         if (Time.time > _nextMoveCallbackTime)
         {
-            pointerMove?.Invoke();
+            if (Mathf.Abs(Input.GetAxis(MouseAxes.MOUSE_X)) > 0 || Mathf.Abs(Input.GetAxis(MouseAxes.MOUSE_Y)) > 0)
+            {
+                pointerMove?.Invoke();
+            }
+
             _nextMoveCallbackTime = Time.time + _pointerMoveDelay;
         }
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        pointerUp?.Invoke();
     }
 }

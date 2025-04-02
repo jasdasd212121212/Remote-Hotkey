@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class KeyboardView : DesktopControllViewBase
 {
+    private CursorStateMachinePresenter _presenter;
     private CancellationTokenSource _cancellation;
 
     private Array _keys;
@@ -13,6 +14,8 @@ public class KeyboardView : DesktopControllViewBase
 
     public event Action<KeyCode> keyDown;
     public event Action<KeyCode> keyUp;
+
+    private int _pressedKeysCount;
 
     public KeyboardView(ImageInputHelper image) : base(image)
     {
@@ -30,23 +33,39 @@ public class KeyboardView : DesktopControllViewBase
         _cancellation?.Cancel();
     }
 
+    public void SetCursorPresenter(CursorStateMachinePresenter presenter)
+    {
+        _presenter = presenter;
+    }
+
     private async UniTask CheckLoop()
     {
         while (_isRunned)
         {
-            foreach (KeyCode key in _keys)
+            if (_presenter != null)
             {
-                if (Input.GetKeyDown(key) && KeyIsNotMouse(key))
+                if (_pressedKeysCount == 0 && _presenter.IsLocked == false)
                 {
-                    keyDown?.Invoke(key);
+                    await UniTask.WaitForSeconds(Time.deltaTime, cancellationToken: _cancellation.Token);
+                    continue;
                 }
-            }
 
-            foreach (KeyCode key in _keys)
-            {
-                if (Input.GetKeyUp(key) && KeyIsNotMouse(key))
+                foreach (KeyCode key in _keys)
                 {
-                    keyUp?.Invoke(key);
+                    if (Input.GetKeyDown(key) && KeyIsNotMouse(key))
+                    {
+                        keyDown?.Invoke(key);
+                        _pressedKeysCount++;
+                    }
+                }
+
+                foreach (KeyCode key in _keys)
+                {
+                    if (Input.GetKeyUp(key) && KeyIsNotMouse(key))
+                    {
+                        keyUp?.Invoke(key);
+                        _pressedKeysCount--;
+                    }
                 }
             }
 

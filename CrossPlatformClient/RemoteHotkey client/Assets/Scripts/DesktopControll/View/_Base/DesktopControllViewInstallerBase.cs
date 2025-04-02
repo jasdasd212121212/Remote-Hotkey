@@ -8,7 +8,7 @@ public abstract class DesktopControllViewInstallerBase<TView> : NonGenericViewIn
     public override DesktopControllViewBase InstallAndGetView(DiContainer container)
     {
         TView view = GetInstance(_desktopViewImage);
-        container.Bind<TView>().FromInstance(GetInstance(_desktopViewImage)).AsSingle().NonLazy();
+        container.Bind<TView>().FromInstance(view).AsSingle().NonLazy();
 
         return view;
     }
