@@ -10,6 +10,7 @@ public class MouseClicksView : DesktopControllViewBase
     {
         DisplayImage.pointerDown += OnDown;
         DisplayImage.pointerUp += OnUp;
+        DisplayImage.disabled += OnUp;
     }
 
     ~MouseClicksView() 
@@ -18,6 +19,7 @@ public class MouseClicksView : DesktopControllViewBase
         {
             DisplayImage.pointerClick -= OnDown;
             DisplayImage.pointerUp -= OnUp;
+            DisplayImage.disabled -= OnUp;
         }
     }
 

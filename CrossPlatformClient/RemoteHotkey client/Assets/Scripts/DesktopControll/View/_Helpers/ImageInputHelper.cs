@@ -16,8 +16,14 @@ public class ImageInputHelper : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public event Action pointerDown;
     public event Action pointerMove;
     public event Action pointerClick;
+    public event Action disabled;
 
     public event Action hoverChange;
+
+    private void OnDisable()
+    {
+        disabled?.Invoke();
+    }
 
     public void OnPointerClick(PointerEventData eventData)
     {
