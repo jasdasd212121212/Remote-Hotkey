@@ -1,16 +1,18 @@
 ﻿using RemoteHotkey.InputsConstrollSystem;
 using RemoteHotkey.Network.Server;
+using RemoteHotkeyCore.ScreenCapture.Helpers.CursorDrawer;
+using RemoteHotkeyCore.ScreenCapture.Helpers.ScreenSize;
 
 namespace RemoteHotkey.ScreenCapture;
 
 public class ScreenCaptureNetworkSender
 {
-    private ScreenCapture _screen;
+    private ScreenCapturer _screen;
     private IServer _server;
 
     public ScreenCaptureNetworkSender(IServer server, MouseController mouse)
     {
-        _screen = new ScreenCapture(mouse);
+        _screen = new ScreenCapturer(mouse, new WinApiLowLevelScreenSizeObtainer(), new FileImageCursorDrawer());
         _server = server;
 
         CaptureLoop();
@@ -22,7 +24,7 @@ public class ScreenCaptureNetworkSender
         {
             _server.SendMessageToClient(_screen.CaptureScreen());
 
-            await Task.Delay(55);
+            await Task.Delay(170);
         }
     }
 }
