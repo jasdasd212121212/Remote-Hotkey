@@ -6,6 +6,7 @@ namespace RemoteHotkeyCore.ScreenCapture.Helpers.CursorDrawer;
 public class FileImageCursorDrawer : ICursorDrawer
 {
     private PathFinder _pathFinder;
+    private Image _cursor;
     private string _path;
 
     private const string CURSOR_FILE_NAME = "Cursor.png";
@@ -15,6 +16,8 @@ public class FileImageCursorDrawer : ICursorDrawer
     {
         _pathFinder = new PathFinder();
         _path = $"{_pathFinder.PathToRoot}\\{CURSOR_FILE_NAME}";
+
+        _cursor = Image.FromFile(_path);
     }
 
     public void DrawCursor(int biggerSide, Graphics captureGraphics, MouseController.POINT mousePoint, Bitmap screen)
@@ -23,7 +26,7 @@ public class FileImageCursorDrawer : ICursorDrawer
 
         if (mousePoint.x < screen.Width && mousePoint.y < screen.Height)
         {
-            captureGraphics.DrawImage(Image.FromFile(_path), mousePoint.x, mousePoint.y, cursorSize, cursorSize);
+            captureGraphics.DrawImage(_cursor, mousePoint.x, mousePoint.y, cursorSize, cursorSize);
         }
     }
 }
