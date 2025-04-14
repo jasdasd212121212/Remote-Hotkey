@@ -46,7 +46,7 @@ public class KeyboardView : DesktopControllViewBase
             {
                 if (_pressedKeysCount == 0 && _presenter.IsLocked == false)
                 {
-                    await UniTask.WaitForSeconds(Time.deltaTime, cancellationToken: _cancellation.Token);
+                    await UniTask.WaitForSeconds(Time.deltaTime / 100, cancellationToken: _cancellation.Token);
                     continue;
                 }
 
@@ -69,7 +69,7 @@ public class KeyboardView : DesktopControllViewBase
                 }
             }
 
-            await UniTask.WaitForSeconds(Time.deltaTime, cancellationToken: _cancellation.Token);
+            await UniTask.WaitForSeconds(Time.deltaTime / 100, cancellationToken: _cancellation.Token);
         }
     }
 

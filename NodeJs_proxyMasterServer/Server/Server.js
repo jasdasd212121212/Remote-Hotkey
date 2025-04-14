@@ -7,10 +7,11 @@ const configLoader = require("./ConfigLoader");
 const fs = require("fs");
 
 const ip = configLoader.loadConfig(fs).IP;
+const port = process.argv[2];
 
 const server = new WebSocket.Server({
     host: ip,
-    port: 12345
+    port: port
 }, () => console.log("Server started on ip: " + ip));
 
 server.on("connection", (ws) => {
@@ -26,7 +27,7 @@ server.on("connection", (ws) => {
     });
 });
 
-server.on("listening", () => {console.log("Server listening")});
+server.on("listening", () => {console.log("Server listening on port: " + port)});
 
 function handleSocket(message, ws){
     var parsedMessage = "" + message;
