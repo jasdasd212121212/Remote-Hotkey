@@ -61,7 +61,12 @@ public class JsClientModel : IClient
         byte[] rawMessage = _parserHelper.ConstructMessage(packegeMarkCode, message, _userName);
         byte[] resultMessage = Encoding.ASCII.GetBytes("send:").Concat(rawMessage).ToArray();
 
-        _socket.Send(resultMessage);
+        try
+        {
+            _socket.Send(resultMessage);
+        }
+        catch { }
+        
         await UniTask.Delay(0);
     }
 

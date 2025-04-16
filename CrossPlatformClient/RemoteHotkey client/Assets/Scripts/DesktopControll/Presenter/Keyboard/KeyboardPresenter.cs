@@ -1,5 +1,3 @@
-using Cysharp.Threading.Tasks;
-using System;
 using UnityEngine;
 
 public class KeyboardPresenter : DesktopControllPresenterBase<KeyboardView>
@@ -31,8 +29,16 @@ public class KeyboardPresenter : DesktopControllPresenterBase<KeyboardView>
         }
     }
 
+    public bool KeyIsDefined(KeyCode key) =>
+        _keyboardKeysDictionary.Keys.ContainsKey(key);
+
     private void OnKeyDown(KeyCode key)
     {
+        if (!KeyIsDefined(key))
+        {
+            return;
+        }
+
         if (TryConvertKeyToWinApiCall(key, out string apiKey))
         {
             _model.ExecuteCommand<PressKeyKeyboardCommand>(apiKey, HOLD_KEY_ARGUMENT); 
@@ -41,6 +47,11 @@ public class KeyboardPresenter : DesktopControllPresenterBase<KeyboardView>
 
     private void OnKeyUp(KeyCode key) 
     {
+        if (!KeyIsDefined(key))
+        {
+            return;
+        }
+
         if (TryConvertKeyToWinApiCall(key, out string apiKey))
         {
             _model.ExecuteCommand<PressKeyKeyboardCommand>(apiKey, RELEASE_KEY_ARGUMENT);
@@ -49,7 +60,7 @@ public class KeyboardPresenter : DesktopControllPresenterBase<KeyboardView>
 
     private bool TryConvertKeyToWinApiCall(KeyCode key, out string result)
     {
-        if (_keyboardKeysDictionary.Keys.ContainsKey(key) == false)
+        if (KeyIsDefined(key) == false)
         {
             Debug.LogError($"Keyboard error -> key: {key} are not defined");
             result = "";

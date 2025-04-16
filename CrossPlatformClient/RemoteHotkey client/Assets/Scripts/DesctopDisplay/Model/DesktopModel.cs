@@ -1,5 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.IO.Compression;
+using System.IO;
 using UnityEngine;
 
 public class DesktopModel
@@ -33,7 +35,7 @@ public class DesktopModel
 
         try
         {
-            _tempTexture.LoadImage(message);
+            _tempTexture.LoadImage(Decompress(message));
         }
         catch (Exception e)
         {
@@ -41,5 +43,24 @@ public class DesktopModel
         }
 
         received?.Invoke(_tempTexture);
+    }
+
+    private byte[] Decompress(byte[] compressedString)
+    {
+        byte[] decompressedBytes;
+
+        var compressedStream = new MemoryStream(compressedString);
+
+        using (var decompressorStream = new DeflateStream(compressedStream, CompressionMode.Decompress))
+        {
+            using (var decompressedStream = new MemoryStream())
+            {
+                decompressorStream.CopyTo(decompressedStream);
+
+                decompressedBytes = decompressedStream.ToArray();
+            }
+        }
+
+        return decompressedBytes;
     }
 }

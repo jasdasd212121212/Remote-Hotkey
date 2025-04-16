@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class KeyboardView : DesktopControllViewBase
     private CancellationTokenSource _cancellation;
 
     private Array _keys;
+    private List<KeyCode> _pressedKeys = new List<KeyCode>();
 
     private bool _isRunned;
 
@@ -25,6 +27,7 @@ public class KeyboardView : DesktopControllViewBase
         _isRunned = true;
 
         CheckLoop().Forget();
+        RepeatLoop().Forget();
     }
 
     ~KeyboardView() 
@@ -55,7 +58,12 @@ public class KeyboardView : DesktopControllViewBase
                     if (Input.GetKeyDown(key) && KeyIsNotMouse(key))
                     {
                         keyDown?.Invoke(key);
-                        _pressedKeysCount++;
+                        
+                        if (!_pressedKeys.Contains(key))
+                        {
+                            _pressedKeys.Add(key);
+                            _pressedKeysCount++;
+                        }
                     }
                 }
 
@@ -65,11 +73,32 @@ public class KeyboardView : DesktopControllViewBase
                     {
                         keyUp?.Invoke(key);
                         _pressedKeysCount--;
+
+                        _pressedKeys.Remove(key);
                     }
                 }
             }
 
             await UniTask.WaitForSeconds(Time.deltaTime / 100, cancellationToken: _cancellation.Token);
+        }
+    }
+
+    private async UniTask RepeatLoop()
+    {
+        while (_isRunned)
+        {
+            if (_presenter != null)
+            {
+                foreach (KeyCode key in _keys)
+                {
+                    if (!_pressedKeys.Contains(key))
+                    {
+                        keyUp.Invoke(key);
+                    }
+                }
+            }
+
+            await UniTask.WaitForSeconds(3, cancellationToken: _cancellation.Token);
         }
     }
 
