@@ -27,7 +27,6 @@ public class KeyboardView : DesktopControllViewBase
         _isRunned = true;
 
         CheckLoop().Forget();
-        RepeatLoop().Forget();
     }
 
     ~KeyboardView() 
@@ -80,25 +79,6 @@ public class KeyboardView : DesktopControllViewBase
             }
 
             await UniTask.WaitForSeconds(Time.deltaTime / 100, cancellationToken: _cancellation.Token);
-        }
-    }
-
-    private async UniTask RepeatLoop()
-    {
-        while (_isRunned)
-        {
-            if (_presenter != null)
-            {
-                foreach (KeyCode key in _keys)
-                {
-                    if (!_pressedKeys.Contains(key))
-                    {
-                        keyUp.Invoke(key);
-                    }
-                }
-            }
-
-            await UniTask.WaitForSeconds(3, cancellationToken: _cancellation.Token);
         }
     }
 
